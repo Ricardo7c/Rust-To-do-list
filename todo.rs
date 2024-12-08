@@ -1,7 +1,11 @@
 use std::io::{self, Write};
 use std::process::Command;
 
-fn input(texto:&str) -> String{
+struct Tarefa{
+    nome: String
+}
+
+fn input(texto:&str) -> String{ //Entrada de texto
     print!("{texto}");
     io::stdout().flush().unwrap();
     let mut x = String::new();
@@ -10,15 +14,34 @@ fn input(texto:&str) -> String{
 
 }
 
-struct Tarefa{
-    nome: String
+fn exibir_lista(lista: &Vec<Tarefa>){ // Exbie a lista
+    if !lista.is_empty(){
+        println!("===== Lista de Tarefas =======");
+        for (id, task) in lista.iter().enumerate() {
+            println!("{} - {}", id+1, task.nome);
+        }
+    }else{
+        println!("A lista ainda está vazia!");
+    }
 }
 
-fn add(nome: String, lista: &mut Vec<Tarefa> ){
+fn add(nome: String, lista: &mut Vec<Tarefa> ){ // Adiciona novas tarefas a lista
     lista.push(Tarefa{nome});
 }
 
-fn limpar_tela() {
+fn del(lista: &mut Vec<Tarefa>){ // Remove uma tarefa em um indice especifico
+    loop{
+        let indice = input("Digite o numero da tarefa que deseja remover: ").parse::<usize>().unwrap();
+        if indice-1 <= lista.len(){
+            lista.remove(indice-1);
+            break;
+        }else{
+            println!("Digite um numero valido!");
+        }
+    }
+}
+
+fn limpar_tela() {  // Limpa a tela anterior no inicio de cada loop
     if cfg!(target_os = "windows") {
         Command::new("cmd").args(&["/C", "cls"]).status().unwrap();
     } else {
@@ -27,37 +50,22 @@ fn limpar_tela() {
 }
 
 
+
 fn main(){
     let mut lista :Vec<Tarefa> = vec![];
     loop{
         limpar_tela();
-        if !lista.is_empty(){
-            println!("===== Lista de Tarefas =======");
-            for (id, task) in lista.iter().enumerate() {
-                println!("{} - {}", id, task.nome);
-            }
-        }else{
-            println!("A lista ainda está vazia!");
-        }
-        let nome = input("Digite a tarefa que deseja adicionar: ");
-        if nome.as_str() == "00" || nome.is_empty(){
-            loop {
-                println!("==== Menu de opções ====");
-                println!("A) Adicionar tarefa: ");
-                println!("B) Remover tarefa:");
-                let opcao = input("Digite a opção desejada: ");
-                if opcao == "A".to_owned(){
-                    break;
-                }else if opcao == "B".to_owned() {
-                    let indice = input("Digite o numero da tarefa que deseja remover: ").parse::<usize>().unwrap();
-                    lista.remove(indice);
-                    break;
-                }else{
-                    println!("Opção invalida, escolha A ou B");
-                }
-            }
-        }else{
+        exibir_lista(&lista);
+        println!();
+
+        let nome = input("Digite a tarefa que deseja adicionar ou <ENTER> para remover: ");
+        if !nome.is_empty(){   // Verifica se o usuario digitou uma tarefa. 
             add(nome, &mut lista);
+        }else{
+            if !lista.is_empty(){  // Verifica se existe Items para serem removidos
+                del(&mut lista);
+                continue;
+            }
         }
     }
 
