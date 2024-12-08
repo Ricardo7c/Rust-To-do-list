@@ -33,13 +33,21 @@ fn add(nome: String, lista: &mut Vec<Tarefa> ){ // Adiciona novas tarefas a list
 
 fn del(lista: &mut Vec<Tarefa>){ // Remove uma tarefa em um indice especifico
     loop{
-        let indice = input("Digite o numero da tarefa que deseja remover: ").parse::<usize>().unwrap();
-        if indice-1 <= lista.len(){
-            lista.remove(indice-1);
-            break;
-        }else{
-            println!("Digite um numero valido!");
+        let indice = input("Digite o numero da tarefa que deseja remover: ");
+        match indice.parse::<usize>() {
+            Ok(indice) => {
+                if indice-1 <= lista.len(){
+                    lista.remove(indice-1);
+                    break;
+                }else{
+                    println!("Digite um numero valido!");
+                }
+            },
+
+            Err(_) => println!("Valor invalido!")
         }
+
+        
     }
 }
 
