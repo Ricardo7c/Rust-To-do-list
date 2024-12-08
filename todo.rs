@@ -18,11 +18,13 @@ fn exibir_lista(lista: &Vec<Tarefa>){ // Exbie a lista
     if !lista.is_empty(){
         println!("===== Lista de Tarefas =======");
         for (id, task) in lista.iter().enumerate() {
-            println!("{} - {}", id+1, task.nome);
+            println!("| {} - {}", id+1, task.nome);
         }
     }else{
-        println!("A lista ainda está vazia!");
+        println!("A lista está vazia!");
     }
+    println!("==============================")
+    
 }
 
 fn add(nome: String, lista: &mut Vec<Tarefa> ){ // Adiciona novas tarefas a lista
