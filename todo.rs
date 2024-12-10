@@ -88,7 +88,6 @@ fn concluir(lista: &mut Vec<Tarefa>){
     }
 }
 
-
 fn main(){
     let mut lista :Vec<Tarefa> = vec![];
     loop{
@@ -107,3 +106,4 @@ fn main(){
             }
         }
     }
+    
