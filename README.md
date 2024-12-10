@@ -1,4 +1,4 @@
-# Lista de tarefas simples
+# 🦀 Lista de tarefas simples
 
 A implementação de uma lista de tarefas simples que bota em pratica os conhecimentos basicos e intermediarios da linguagem Rust.
 
