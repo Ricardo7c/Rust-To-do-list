@@ -2,7 +2,8 @@ use std::io::{self, Write};
 use std::process::Command;
 
 struct Tarefa{
-    nome: String
+    nome: String,
+    status: bool
 }
 
 fn input(texto:&str) -> String{ //Entrada de texto
@@ -18,6 +19,10 @@ fn exibir_lista(lista: &Vec<Tarefa>){ // Exbie a lista
     if !lista.is_empty(){
         println!("===== Lista de Tarefas =======");
         for (id, task) in lista.iter().enumerate() {
+            if task.status == true{
+                println!("| {} - {} - (Concluida)", id+1, task.nome);
+                continue;
+            }
             println!("| {} - {}", id+1, task.nome);
         }
     }else{
@@ -27,13 +32,20 @@ fn exibir_lista(lista: &Vec<Tarefa>){ // Exbie a lista
     
 }
 
-fn add(nome: String, lista: &mut Vec<Tarefa> ){ // Adiciona novas tarefas a lista
-    lista.push(Tarefa{nome});
+fn add(lista: &mut Vec<Tarefa> ){ // Adiciona novas tarefas a lista
+    let nome = input("Digite a tarefa: ");
+    if !nome.is_empty(){
+        lista.push(Tarefa{nome, status: false});
+    }
+    
 }
 
 fn del(lista: &mut Vec<Tarefa>){ // Remove uma tarefa em um indice especifico
     loop{
         let indice = input("Digite o numero da tarefa que deseja remover: ");
+        if indice.is_empty(){
+            break;
+        }
         match indice.parse::<usize>() {
             Ok(indice) => {
                 if indice-1 <= lista.len(){
@@ -43,11 +55,8 @@ fn del(lista: &mut Vec<Tarefa>){ // Remove uma tarefa em um indice especifico
                     println!("Digite um numero valido!");
                 }
             },
-
             Err(_) => println!("Valor invalido!")
         }
-
-        
     }
 }
 
@@ -59,6 +68,25 @@ fn limpar_tela() {  // Limpa a tela anterior no inicio de cada loop
     }
 }
 
+fn concluir(lista: &mut Vec<Tarefa>){
+    loop{
+    let tarefa = input("Digite o numero da tarefa concluida: ");
+    if tarefa.is_empty(){
+        break;
+    }
+    match tarefa.parse::<usize>() {
+        Ok(indice) => {
+            if indice-1 <= lista.len(){
+                lista[indice-1].status = true;
+                break;
+            }else{
+                println!("Digite um numero valido!");
+            }
+        },
+        Err(_) => println!("Valor invalido!")
+    }
+    }
+}
 
 
 fn main(){
@@ -67,16 +95,15 @@ fn main(){
         limpar_tela();
         exibir_lista(&lista);
         println!();
-
-        let nome = input("Digite a tarefa que deseja adicionar ou <ENTER> para remover: ");
-        if !nome.is_empty(){   // Verifica se o usuario digitou uma tarefa. 
-            add(nome, &mut lista);
-        }else{
-            if !lista.is_empty(){  // Verifica se existe Items para serem removidos
-                del(&mut lista);
-                continue;
+        println!("A) Adicionar");
+        println!("B) Concluir");
+        println!("C) Remover");
+        let opcao = input("Digite a tarefa que deseja adicionar<ENTER> para remover: ");
+        match opcao.as_str() {
+            "A" => add(&mut lista),
+            "B" => concluir(&mut lista),
+            "C" => del(&mut lista),
+            _ => println!("Opção invalida, tente novamente!")
             }
         }
     }
-
-}
